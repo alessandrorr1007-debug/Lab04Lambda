@@ -82,3 +82,29 @@ resource "aws_subnet" "private_b" {
     Name = "private-b-${var.env}"
   }
 }
+
+resource "aws_eip" "nat_a" {
+  domain = "vpc"
+}
+
+resource "aws_eip" "nat_b" {
+  domain = "vpc"
+}
+
+resource "aws_nat_gateway" "nat_a" {
+  subnet_id     = aws_subnet.public_a.id
+  allocation_id = aws_eip.nat_a.id
+
+  tags = {
+    Name = "nat-a-${var.env}"
+  }
+}
+
+resource "aws_nat_gateway" "nat_b" {
+  subnet_id     = aws_subnet.public_b.id
+  allocation_id = aws_eip.nat_b.id
+
+  tags = {
+    Name = "nat-b-${var.env}"
+  }
+}
